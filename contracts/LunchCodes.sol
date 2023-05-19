@@ -32,8 +32,8 @@ contract LunchCodes {
 	GuardExchangeState state;
 
 	constructor() {
-		guard1 = address(1);
-		guard2 = address(2);
+		guard1 = 0x627306090abaB3A6e1400e9345bC60c78a8BEf57;
+		guard2 = 0xf17f52151EbEF6C7334FAD080c5704D77216b732;
 		request = address(0);
 		entryStarted = false;
 		exitStarted = false;
@@ -159,5 +159,25 @@ contract LunchCodes {
 			require(guard1 == msg.sender);
 			state = GuardExchangeState.NONE;
 		}
+	}
+
+	function getGuard1() public view returns (address) {
+		return guard1;
+	}
+
+	function getGuard2() public view returns (address) {
+		return guard2;
+	}
+
+	function getExtraPerson() public view returns (address) {
+		return extraPerson;
+	}
+
+	function getRequestor() public view returns (address) {
+		return request;
+	}
+
+	function getLog() public view returns (LogEntry[] memory) {
+		return log;
 	}
 }
