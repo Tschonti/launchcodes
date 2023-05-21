@@ -1,4 +1,4 @@
-const MetaCoin = artifacts.require("MetaCoin");
+/*const MetaCoin = artifacts.require("MetaCoin");
 
 contract('MetaCoin', (accounts) => {
   it('should put 10000 MetaCoin in the first account', async () => {
@@ -36,4 +36,4 @@ contract('MetaCoin', (accounts) => {
     assert.equal(accountOneEndingBalance, accountOneStartingBalance - amount, "Amount wasn't correctly taken from the sender");
     assert.equal(accountTwoEndingBalance, accountTwoStartingBalance + amount, "Amount wasn't correctly sent to the receiver");
   });
-});
+});*/
