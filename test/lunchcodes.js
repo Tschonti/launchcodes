@@ -6,6 +6,7 @@ contract('LunchCodes', (accounts) => {
   const janitor = accounts[2]
   const guard3 = accounts[3]
   const guard4 = accounts[4]
+  const attacker = accounts[5]
 
   it('Janitor enters the building then leaves', async () => {
     const lc = await LunchCodes.deployed();
