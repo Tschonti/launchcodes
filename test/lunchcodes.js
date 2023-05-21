@@ -1,9 +1,12 @@
 const LunchCodes = artifacts.require("LunchCodes");
 
 contract('LunchCodes', (accounts) => {
-  let guard1 = accounts[0]
-  let guard2 = accounts[1]
-  let janitor = accounts[2]
+  const guard1 = accounts[0]    // initially in the facility
+  const guard2 = accounts[1]    // initially in the facility
+  const janitor = accounts[2]
+  const guard3 = accounts[3]
+  const guard4 = accounts[4]
+
   it('Janitor enters the building then leaves', async () => {
     const lc = await LunchCodes.deployed();
 
