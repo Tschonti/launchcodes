@@ -155,10 +155,8 @@ contract LunchCodes {
 
 	function denyGuardChange() public {
 		require(state == GuardExchangeState.G1_REQUESTED);
-		if (state == GuardExchangeState.G1_REQUESTED) {
-			require(guard1 == msg.sender);
-			state = GuardExchangeState.NONE;
-		}
+		require(guard1 == msg.sender);
+		state = GuardExchangeState.NONE;
 	}
 
 	function getGuard1() public view returns (address) {
