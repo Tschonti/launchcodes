@@ -177,6 +177,10 @@ contract LunchCodes {
 		return request;
 	}
 
+	function getState() public view returns (GuardExchangeState) {
+		return state;
+	}
+
 	function getLog() public view returns (LogEntry[] memory) {
 		return log;
 	}
