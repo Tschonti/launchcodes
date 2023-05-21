@@ -128,11 +128,11 @@ contract('LunchCodes', (accounts) => {
     assert.equal(actualLog[4].person, guard3)
     assert.equal(actualLog[4].out, false)
 
-    await lc.iWantToBeAGuard({from: guard3})
+    await lc.requestGuardChange({from: guard3})
     state = await lc.getState()
     assert.equal(state, 1) //G1_REQUESTED
 
-    await lc.uCanBeGuard({from: guard1})
+    await lc.approveGuardChange({from: guard1})
     state = await lc.getState()
     assert.equal(state, 2) //G1_APPROVED
 
@@ -171,7 +171,7 @@ contract('LunchCodes', (accounts) => {
     assert.equal(actualLog[6].person, guard4)
     assert.equal(actualLog[6].out, false)
 
-    await lc.uCanBeGuard({from: guard2})
+    await lc.approveGuardChange({from: guard2})
     state = await lc.getState()
     assert.equal(state, 5) //G2_APPROVED
 

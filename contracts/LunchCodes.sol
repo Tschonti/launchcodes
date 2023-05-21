@@ -102,7 +102,7 @@ contract LunchCodes {
 		log.push(LogEntry(msg.sender, false));
 
 		if (state == GuardExchangeState.G1_EXITED) {
-			iWantToBeAGuard();
+			requestGuardChange();
 		}
 	}
 
@@ -124,7 +124,7 @@ contract LunchCodes {
 		log.push(LogEntry(msg.sender, true));
 	}
 
-	function iWantToBeAGuard() public {
+	function requestGuardChange() public {
 		require(extraPerson == msg.sender);
 		require(exitStarted == false);
 		require(state == GuardExchangeState.NONE || state == GuardExchangeState.G1_EXITED);
@@ -135,7 +135,7 @@ contract LunchCodes {
 		}
 	}
 
-	function uCanBeGuard() public {
+	function approveGuardChange() public {
 		require(state == GuardExchangeState.G1_REQUESTED || state == GuardExchangeState.G2_REQUESTED);
 
 		if (state == GuardExchangeState.G1_REQUESTED) {
@@ -153,7 +153,7 @@ contract LunchCodes {
 		}
 	}
 
-	function denyNewGuard() public {
+	function denyGuardChange() public {
 		require(state == GuardExchangeState.G1_REQUESTED);
 		if (state == GuardExchangeState.G1_REQUESTED) {
 			require(guard1 == msg.sender);
