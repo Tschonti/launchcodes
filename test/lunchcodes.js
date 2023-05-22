@@ -91,6 +91,13 @@ contract('LunchCodes', (accounts) => {
     let requestor = await lc.getRequestor()
     assert.equal(requestor, attacker)
 
+    try {
+      await lc.entry({from: attacker})
+      assert.fail(0, 1, 'Transaction not reverted')
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert')
+    }
+
     await lc.approve({from: guard1})
     try {
       await lc.entry({from: attacker})
