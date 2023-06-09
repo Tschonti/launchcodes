@@ -7,6 +7,7 @@ contract('LunchCodes', (accounts) => {
   const guard3 = accounts[3]
   const guard4 = accounts[4]
   const attacker = accounts[5]
+  const admin = accounts[6]
 
   it('Janitor enters the building then leaves', async () => {
     const lc = await LunchCodes.deployed();
@@ -120,8 +121,30 @@ contract('LunchCodes', (accounts) => {
 
   it('Shiftchange', async () => {
     const lc = await LunchCodes.deployed();
+
+    await lc.addGuard(guard3, {from: admin})
+    await lc.addGuard(guard4, {from: admin})
+
     let state = await lc.getState()
     assert.equal(state, 0) //NONE
+
+    await lc.requestEntry({from: attacker})
+    await lc.approve({from: guard1})
+    await lc.approve({from: guard2})
+    await lc.entry({from: attacker})
+
+    // attacker not in the guard list, should not be able to request guard change
+    try {
+      await lc.requestGuardChange({from: attacker})
+      assert.fail(0, 1, 'Transaction not reverted')
+    } catch (e) {
+      assert.equal(e.message, 'VM Exception while processing transaction: revert')
+    }
+    await lc.requestExit({from: attacker})
+    await lc.approve({from: guard1})
+    await lc.approve({from: guard2})
+    await lc.exit({from: attacker})
+
 
     await lc.requestEntry({from: guard3})
     await lc.approve({from: guard1})
@@ -131,9 +154,9 @@ contract('LunchCodes', (accounts) => {
     let ep = await lc.getExtraPerson()
     assert.equal(ep, guard3)
     let actualLog = await lc.getLog()
-    assert.equal(actualLog.length, 5)
-    assert.equal(actualLog[4].person, guard3)
-    assert.equal(actualLog[4].out, false)
+    assert.equal(actualLog.length, 7)
+    assert.equal(actualLog[6].person, guard3)
+    assert.equal(actualLog[6].out, false)
 
     await lc.requestGuardChange({from: guard3})
     state = await lc.getState()
@@ -159,9 +182,9 @@ contract('LunchCodes', (accounts) => {
     ep = await lc.getExtraPerson()
     assert.equal(ep, 0)
     actualLog = await lc.getLog()
-    assert.equal(actualLog.length, 6)
-    assert.equal(actualLog[5].person, guard1)
-    assert.equal(actualLog[5].out, true)
+    assert.equal(actualLog.length, 8)
+    assert.equal(actualLog[7].person, guard1)
+    assert.equal(actualLog[7].out, true)
 
     await lc.requestEntry({from: guard4})
     await lc.approve({from: guard3})
@@ -174,9 +197,9 @@ contract('LunchCodes', (accounts) => {
     ep = await lc.getExtraPerson()
     assert.equal(ep, guard4)
     actualLog = await lc.getLog()
-    assert.equal(actualLog.length, 7)
-    assert.equal(actualLog[6].person, guard4)
-    assert.equal(actualLog[6].out, false)
+    assert.equal(actualLog.length, 9)
+    assert.equal(actualLog[8].person, guard4)
+    assert.equal(actualLog[8].out, false)
 
     await lc.approveGuardChange({from: guard2})
     state = await lc.getState()
@@ -198,9 +221,9 @@ contract('LunchCodes', (accounts) => {
     ep = await lc.getExtraPerson()
     assert.equal(ep, 0)
     actualLog = await lc.getLog()
-    assert.equal(actualLog.length, 8)
-    assert.equal(actualLog[7].person, guard2)
-    assert.equal(actualLog[7].out, true)
+    assert.equal(actualLog.length, 10)
+    assert.equal(actualLog[9].person, guard2)
+    assert.equal(actualLog[9].out, true)
 
   })
 

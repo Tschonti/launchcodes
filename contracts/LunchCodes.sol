@@ -17,9 +17,11 @@ enum GuardExchangeState {
 }
 
 contract LunchCodes {
+	address admin;
 	address guard1;
 	address guard2;
 	address extraPerson;
+	address[] guards;
 
 	address request;
 	bool guard1Approve;
@@ -31,9 +33,12 @@ contract LunchCodes {
 
 	GuardExchangeState state;
 
-	constructor() {
-		guard1 = 0x627306090abaB3A6e1400e9345bC60c78a8BEf57;
-		guard2 = 0xf17f52151EbEF6C7334FAD080c5704D77216b732;
+	constructor(address _admin, address _guard1, address _guard2) {
+		guard1 = _guard1;
+		guard2 = _guard2;
+		guards.push(guard1);
+		guards.push(guard2);
+		admin = _admin;
 		request = address(0);
 		entryStarted = false;
 		exitStarted = false;
@@ -45,6 +50,29 @@ contract LunchCodes {
 	modifier canComeIn {
 		require(extraPerson == address(0));
 		_;
+	}
+
+	modifier isAdmin {
+		require(msg.sender == admin);
+		_;
+	}
+
+	function addGuard(address g) public isAdmin {
+		for (uint i=0; i < guards.length; i++) {
+			if (guards[i] == g) {
+				revert();
+			}
+		}
+		guards.push(g);
+	}
+
+	function removeGuard(address g) public isAdmin {
+		for (uint i=0; i < guards.length; i++) {
+			if (guards[i] == g) {
+				guards[i] = guards[guards.length - 1];
+				guards.pop();
+			}
+		}
 	}
 
 	function requestEntry() public canComeIn {
@@ -128,6 +156,14 @@ contract LunchCodes {
 		require(extraPerson == msg.sender);
 		require(exitStarted == false);
 		require(state == GuardExchangeState.NONE || state == GuardExchangeState.G1_EXITED);
+		bool guardFound = false;
+		for (uint i=0; i < guards.length; i++) {
+			if (guards[i] == msg.sender) {
+				guardFound = true;
+				break;
+			}
+		}
+		require(guardFound);
 		if (state == GuardExchangeState.NONE) {
 			state = GuardExchangeState.G1_REQUESTED;
 		} else {
